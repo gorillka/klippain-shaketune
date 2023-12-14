@@ -118,25 +118,21 @@ def axesmap_calibration(lognames, accel=None):
     if len(raw_datas) > 1:
         raise ValueError("Analysis of multiple CSV files at once is not possible with this script")
 
-    filtered_data = [accel_signal_filter(raw_datas[0][:, i+1]) for i in range(3)]
-    spikes = [find_first_spike(filtered_data[i]) for i in range(3)]
-    spikes_sorted = sorted([(spikes[0], 'x'), (spikes[1], 'y'), (spikes[2], 'z')], key=lambda x: x[0][1])
+    # NEW: Splitting the data into three equal parts
+    total_length = len(raw_datas[0])
+    segment_length = total_length // 3
+    segments = [raw_datas[0][i*segment_length:(i+1)*segment_length] for i in range(3)]
 
-    # Using the previous variables to get the axes_map and errors
-    axes_map = ','.join([f"{spike[0][0]}{spike[1]}" for spike in spikes_sorted])
-    # alignment_error, sensitivity_error = compute_errors(filtered_data, spikes_sorted, accel, NUM_POINTS)
+    # Processing each segment
+    results = ""
+    for i, segment in enumerate(segments):
+        filtered_data = [accel_signal_filter(segment[:, j+1]) for j in range(3)]
+        spikes = [find_first_spike(filtered_data[j]) for j in range(3)]
+        spikes_sorted = sorted([(spikes[0], 'x'), (spikes[1], 'y'), (spikes[2], 'z')], key=lambda x: x[0][1])
 
-    results = f"Detected axes_map:\n  {axes_map}\n"
-
-    # TODO: work on this function that is currently not giving good results...
-    # results += "Accelerometer angle deviation:\n"
-    # for axis, angle in alignment_error.items():
-    #     angle_degrees = np.degrees(angle) # Convert radians to degrees
-    #     results += f"  {axis.upper()} axis: {angle_degrees:.2f} degrees\n"
-
-    # results += "Accelerometer sensitivity error:\n"
-    # for axis, error in sensitivity_error.items():
-    #     results += f"  {axis.upper()} axis: {error:.2f}%\n"
+        # Using the previous variables to get the axes_map and errors for each segment
+        axes_map = ','.join([f"{spike[0][0]}{spike[1]}" for spike in spikes_sorted])
+        results += f"Segment {i+1} Detected axes_map:\n  {axes_map}\n\n"
 
     return results
 
