@@ -85,7 +85,7 @@ def create_belts_graph():
     
     # Generate the belts graph and its name
     fig = belts_calibration(lognames, KLIPPER_FOLDER)
-    png_filename = os.path.join(RESULTS_FOLDER, RESULTS_SUBFOLDERS[0], f'belts_{current_date}.png')
+    png_filename = os.path.join(RESULTS_FOLDER, RESULTS_SUBFOLDERS[0], f'belts.png')
 
     fig.savefig(png_filename)
     return
@@ -119,7 +119,7 @@ def create_shaper_graph():
     
     # Generate the shaper graph and its name
     fig = shaper_calibration([new_file], KLIPPER_FOLDER)
-    png_filename = os.path.join(RESULTS_FOLDER, RESULTS_SUBFOLDERS[1], f'resonances_{current_date}_{axis}.png')
+    png_filename = os.path.join(RESULTS_FOLDER, RESULTS_SUBFOLDERS[1], f'resonances_{axis}.png')
     
     fig.savefig(png_filename)
     return
@@ -156,7 +156,7 @@ def create_vibrations_graph(axis_name):
 
     # Generate the vibration graph and its name
     fig = vibrations_calibration(lognames, KLIPPER_FOLDER, axis_name)
-    png_filename = os.path.join(RESULTS_FOLDER, RESULTS_SUBFOLDERS[2], f'vibrations_{current_date}_{axis_name}.png')
+    png_filename = os.path.join(RESULTS_FOLDER, RESULTS_SUBFOLDERS[2], f'vibrations_{axis_name}.png')
     
     # Archive all the csv files in a tarball and remove them to clean up the results folder
     with tarfile.open(os.path.join(RESULTS_FOLDER, RESULTS_SUBFOLDERS[2], f'vibrations_{current_date}_{axis_name}.tar.gz'), 'w:gz') as tar:
